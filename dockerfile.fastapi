@@ -70,21 +70,3 @@ RUN pip install 'sqlalchemy==2.0.36'  'alembic==1.14.0'
 RUN pip install 'pytest==8.3.4' 'pytest-asyncio==0.25.1'
 
 ############################################################
-
-# 更新系統和安裝 sudo
-RUN apt-get update && apt-get install -y sudo
-
-# 新增使用者並設置為無密碼 sudo 權限
-RUN useradd -m -s /bin/bash user \
-    && echo "user:user" | chpasswd \
-    && usermod -aG sudo user \
-    && echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# 切換使用者
-USER user
-
-# 設定工作目錄
-RUN mkdir /home/user/workspace
-WORKDIR /home/user
-
-############################################################
