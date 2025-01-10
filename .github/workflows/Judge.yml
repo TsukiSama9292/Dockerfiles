@@ -1,0 +1,44 @@
+name: JUDGE IMAGE
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build judge images
+      run: |
+        docker build --pull --no-cache -f dockerfile.cpp -t ${{ secrets.DOCKER_USERNAME }}/judge:cpp-rolling .
+        docker build --pull --no-cache -f dockerfile.python -t ${{ secrets.DOCKER_USERNAME }}/judge:python-rolling .
+        docker build --pull --no-cache -f dockerfile.java -t ${{ secrets.DOCKER_USERNAME }}/judge:java-rolling .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:cpp-rolling
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:python-rolling
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:java-rolling
+
+  # pull-image:
+  #   runs-on: self-hosted
+  #   needs: build
+  #   if: success()
+  #   steps:
+  #   - name: Pull the Docker image
+  #     run: |
+  #       docker pull ${{ secrets.DOCKER_USERNAME }}/judge:cpp-rolling
+  #       docker pull ${{ secrets.DOCKER_USERNAME }}/judge:python-rolling
+  #       docker pull ${{ secrets.DOCKER_USERNAME }}/judge:java-rolling

@@ -1,0 +1,32 @@
+FROM ubuntu:22.04
+
+RUN apt update && \
+    apt upgrade -y && \
+    apt-get install -y pip python3 python3-pip git nano mysql-client && \
+    apt-get install -y docker.io=24.0.7-0ubuntu2~22.04.1 && \
+    apt-get install -y pkg-config libmysqlclient-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 防止 Python 寫入 .pyc 文件
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN pip install 'Django==5.1'
+RUN pip install 'tzdata==2024.1'
+RUN pip install 'docker==7.1.0'
+RUN pip install 'mysql-connector-python==9.0.0'
+RUN pip install 'mysqlclient==2.1.1'
+RUN pip install 'djangorestframework==3.15.2'
+RUN pip install 'djangorestframework-simplejwt==5.3.1'
+RUN pip install 'gunicorn==23.0.0' 'uvicorn==0.30.6'
+RUN pip install 'django-asgi-lifespan==0.3.1'
+RUN pip install 'django-redis==5.4.0'
+RUN pip install 'django-cors-headers==4.4.0'
+RUN pip install 'requests==2.32.3'
+RUN pip install 'djangorestframework==3.15.2' 
+RUN pip install 'djangorestframework-simplejwt==5.3.1'
+RUN pip install 'google-auth==2.36.0'
+RUN pip install 'python-dotenv==1.0.1'
+RUN pip install 'pillow==11.0.0'
+RUN pip install 'ragflow-sdk==0.15.1'
+RUN mkdir app
