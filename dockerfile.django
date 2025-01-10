@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+############################################################
+
 RUN apt update && \
     apt upgrade -y && \
     apt-get install -y pip python3 python3-pip git nano mysql-client && \
@@ -10,6 +12,8 @@ RUN apt update && \
 
 # 防止 Python 寫入 .pyc 文件
 ENV PYTHONDONTWRITEBYTECODE=1
+
+############################################################
 
 RUN pip install 'Django==5.1'
 RUN pip install 'tzdata==2024.1'
@@ -30,3 +34,17 @@ RUN pip install 'python-dotenv==1.0.1'
 RUN pip install 'pillow==11.0.0'
 RUN pip install 'ragflow-sdk==0.15.1'
 RUN mkdir app
+
+############################################################
+
+# 更新包清單並安裝 sudo
+RUN apt-get update && apt-get install -y sudo
+
+# 將 ubuntu 加入 sudo 群組
+RUN echo "ubuntu:ubuntu" | chpasswd && \
+    adduser ubuntu sudo
+
+# 設置無密碼 sudo
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+
+############################################################
