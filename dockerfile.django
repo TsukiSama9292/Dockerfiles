@@ -2,16 +2,56 @@ FROM ubuntu:24.04
 
 ############################################################
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt-get install -y pip python3 python3-pip git nano mysql-client && \
-    apt-get install -y docker.io=24.0.7-0ubuntu2~22.04.1 && \
-    apt-get install -y pkg-config libmysqlclient-dev && \
-    apt-get clean && \
+# 更新包清單並安裝 sudo
+RUN apt-get update && apt-get install -y sudo adduser
+
+# 將 ubuntu 加入 sudo 群組
+RUN echo "ubuntu:ubuntu" | chpasswd && \
+    adduser ubuntu sudo
+
+# 設置無密碼 sudo
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+
+############################################################
+
+# 更新套件清單並安裝必要的工具
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    bzip2 \
+    ca-certificates \
+    curl \
+    git \
+    build-essential \
+    python3-dev \
+    mysql-client \
+    docker.io \
+    pkg-config \
+    libmysqlclient-dev \
+    pip python3 python3-pip \
+    sudo \
+    && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# 下載並安裝 Miniconda
+RUN wget -qO /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh
+
+# 設定環境變數
+ENV PATH /opt/conda/bin:$PATH
+# 初始化 Conda
+RUN conda init
+# 創建新的 Conda 環境
+RUN conda create -n workspace python=3.10 -y
+# 設定環境變數，使 workspace 成為預設環境
+ENV PATH /opt/conda/envs/workspace/bin:$PATH
+RUN echo "conda activate workspace" >> ~/.bashrc
 # 防止 Python 寫入 .pyc 文件
 ENV PYTHONDONTWRITEBYTECODE=1
+
+# 建立應用目錄
+RUN mkdir /app
 
 ############################################################
 
@@ -33,18 +73,5 @@ RUN pip install 'google-auth==2.36.0'
 RUN pip install 'python-dotenv==1.0.1'
 RUN pip install 'pillow==11.0.0'
 RUN pip install 'ragflow-sdk==0.15.1'
-RUN mkdir app
-
-############################################################
-
-# 更新包清單並安裝 sudo
-RUN apt-get update && apt-get install -y sudo
-
-# 將 ubuntu 加入 sudo 群組
-RUN echo "ubuntu:ubuntu" | chpasswd && \
-    adduser ubuntu sudo
-
-# 設置無密碼 sudo
-RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
 
 ############################################################

@@ -1,5 +1,17 @@
 FROM ubuntu:24.04
 
+############################################################
+
+# 更新包清單並安裝 sudo
+RUN apt-get update && apt-get install -y sudo adduser
+
+# 將 ubuntu 加入 sudo 群組
+RUN echo "ubuntu:ubuntu" | chpasswd && \
+    adduser ubuntu sudo
+
+# 設置無密碼 sudo
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+
 ###########################################################
 
 # 更新套件清單並安裝必要的工具

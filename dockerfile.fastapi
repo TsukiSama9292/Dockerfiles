@@ -1,6 +1,18 @@
 FROM ubuntu:24.04
 
-###########################################################
+############################################################
+
+# 更新包清單並安裝 sudo
+RUN apt-get update && apt-get install -y sudo adduser
+
+# 將 ubuntu 加入 sudo 群組
+RUN echo "ubuntu:ubuntu" | chpasswd && \
+    adduser ubuntu sudo
+
+# 設置無密碼 sudo
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+
+############################################################
 
 # 更新套件清單並安裝必要的工具
 RUN apt-get update && \
@@ -35,7 +47,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # 建立應用目錄
 RUN mkdir /app
 
-###########################################################
+############################################################
 
 # 安裝 llama-index 依賴
 RUN pip install 'llama-index==0.12.9' && \
@@ -58,27 +70,11 @@ RUN pip install 'gunicorn==23.0.0'
 RUN pip install 'python-multipart==0.0.20'
 ### 驗證 email 格式
 RUN pip install 'email-validator==2.2.0'
-
-# 安裝資料庫連接套件 , 不需要 mysqlclient
 ### 資料庫異步連接
 RUN pip install 'databases==0.9.0'
 ### 資料庫遷移
 RUN pip install 'sqlalchemy==2.0.36'  'alembic==1.14.0'
-
-# 測試工具
-### 同步與異步
+### 同步與異步測試工具
 RUN pip install 'pytest==8.3.4' 'pytest-asyncio==0.25.1'
-
-############################################################
-
-# 更新包清單並安裝 sudo
-RUN apt-get update && apt-get install -y sudo
-
-# 將 ubuntu 加入 sudo 群組
-RUN echo "ubuntu:ubuntu" | chpasswd && \
-    adduser ubuntu sudo
-
-# 設置無密碼 sudo
-RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
 
 ############################################################
