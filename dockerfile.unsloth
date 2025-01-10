@@ -1,0 +1,45 @@
+FROM ubuntu:24.04
+
+###########################################################
+
+# 更新套件清單並安裝必要的工具
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    bzip2 \
+    ca-certificates \
+    curl \
+    git \
+    build-essential \
+    python3-dev \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 下載並安裝 Miniconda
+RUN wget -qO /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh
+
+# 設定環境變數
+ENV PATH /opt/conda/bin:$PATH
+# 初始化 Conda
+RUN conda init
+# 創建新的 Conda 環境
+RUN conda create --name unsloth_env \
+    python=3.11 \
+    pytorch-cuda=12.1 \
+    pytorch cudatoolkit xformers -c pytorch -c nvidia -c xformers \
+    -y
+# 設定環境變數，使 workspace 成為預設環境
+ENV PATH /opt/conda/envs/unsloth_env/bin:$PATH
+# 開啟即為 unsloth_env 環境
+RUN echo "conda activate unsloth_env" >> ~/.bashrc
+# 防止 Python 寫入 .pyc 文件
+ENV PYTHONDONTWRITEBYTECODE=1
+# 建立應用目錄
+RUN mkdir /app
+
+###########################################################
+
+RUN pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+RUN pip install --no-deps trl peft accelerate bitsandbytes
