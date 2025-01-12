@@ -50,10 +50,8 @@ RUN mkdir /app
 
 ############################################################
 
-# 安裝 llama-index 依賴
-RUN pip install 'llama-index==0.12.9' && \
-    pip install 'llama-index-llms-ollama==0.5.0' && \
-    pip install 'llama-index-embeddings-huggingface==0.4.0'
+# 安裝 LangChain 依賴
+RUN pip install langchain
 
 ############################################################
 
@@ -82,5 +80,8 @@ RUN pip install 'aiomysql==0.2.0'
 RUN pip install 'sqlalchemy==2.0.36' 'alembic==1.14.0' 
 ### 同步與異步測試工具
 RUN pip install 'pytest==8.3.4' 'pytest-asyncio==0.25.1'
-
+### 異步 Redis
+RUN pip install 'aioredis==2.0.1'
+### 登入
+RUN pip install 'httpx==0.27.2' 'python-dotenv==1.0.1'
 ############################################################
