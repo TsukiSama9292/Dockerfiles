@@ -7,7 +7,7 @@ FROM ubuntu:22.04
 
 # 將 ubuntu 加入 sudo 群組
 # RUN echo "ubuntu:ubuntu" | chpasswd && \
-    adduser ubuntu sudo
+#    adduser ubuntu sudo
 
 # 設置無密碼 sudo
 # RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
