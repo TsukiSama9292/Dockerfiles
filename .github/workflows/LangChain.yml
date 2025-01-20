@@ -22,7 +22,7 @@ jobs:
 
     - name: langchain fastapi image
       run: |
-        docker build --pull --no-cache -f dockerfile.fastapi -t ${{ secrets.DOCKER_USERNAME }}/server:langchain-fastapi-rolling .
+        docker build --pull --no-cache -f dockerfile.langchain -t ${{ secrets.DOCKER_USERNAME }}/server:langchain-fastapi-rolling .
         docker push ${{ secrets.DOCKER_USERNAME }}/server:langchain-fastapi-rolling
         # docker image rm ${{ secrets.DOCKER_USERNAME }}/server:langchain-fastapi-rolling
         # docker system prune -f
