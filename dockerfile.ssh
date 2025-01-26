@@ -1,0 +1,22 @@
+FROM ubuntu:latest
+
+# Update package lists and install OpenSSH server
+RUN apt-get update && apt-get install -y openssh-server
+
+# Create the directory for the SSH daemon to run
+RUN mkdir /var/run/sshd
+
+# Set the root password to an empty string (no password)
+RUN echo 'root:' | chpasswd
+
+# Allow root login via SSH without a password
+RUN sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && sed -i 's/^#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && sed -i 's/^#PermitEmptyPasswords.*/PermitEmptyPasswords yes/' /etc/ssh/sshd_config \
+    && sed -i 's/^#UsePAM.*/UsePAM no/' /etc/ssh/sshd_config
+
+# Expose port 22 for SSH
+EXPOSE 22
+
+# Start the SSH service
+CMD ["/usr/sbin/sshd", "-D"]
