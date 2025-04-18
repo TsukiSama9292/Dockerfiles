@@ -29,12 +29,3 @@ jobs:
     - name: Push the Docker image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest
-        
-  pull-image:
-    runs-on: self-hosted
-    needs: build
-    if: success()
-    steps:
-    - name: Pull the Docker image
-      run: |
-        docker pull ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest
