@@ -34,8 +34,14 @@ RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord
     && sudo apt-get install -f -y \
     && rm discord.deb
 
+# 安裝 GIMP
+RUN wget https://download.gimp.org/gimp/v3.0/linux/GIMP-3.0.2-x86_64.AppImage -O gimp.AppImage \
+    && chmod +x gimp.AppImage \
+    && sudo mv gimp.AppImage /usr/local/bin/gimp
+
 # 切換到 root 用戶
 USER root
+
 # 建立 Postman 桌面連結
 RUN echo '[Desktop Entry]' >> /usr/share/applications/postman.desktop && \
     echo 'Name=Postman' >> /usr/share/applications/postman.desktop && \
@@ -45,6 +51,17 @@ RUN echo '[Desktop Entry]' >> /usr/share/applications/postman.desktop && \
     echo 'Categories=Development;' >> /usr/share/applications/postman.desktop
 # 授權 Postman 桌面連結
 RUN chmod +x /usr/share/applications/postman.desktop
+
+# 建立 GIMP 桌面連結
+RUN mkdir -p /usr/share/icons/gimp
+RUN curl https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/The_GIMP_icon_-_v3.0.svg/1200px-The_GIMP_icon_-_v3.0.svg.png -o /usr/share/icons/gimp/gimp.png
+RUN echo '[Desktop Entry]' > /usr/share/applications/gimp.desktop && \
+    echo 'Name=GIMP' >> /usr/share/applications/gimp.desktop && \
+    echo 'Exec=/usr/local/bin/gimp' >> /usr/share/applications/gimp.desktop && \
+    echo 'Icon=/usr/share/icons/gimp/gimp.png' >> /usr/share/applications/gimp.desktop && \
+    echo 'Type=Application' >> /usr/share/applications/gimp.desktop && \
+    echo 'Categories=Graphics;2DGraphics;RasterGraphics;' >> /usr/share/applications/gimp.desktop && \
+    chmod +x /usr/share/applications/gimp.desktop
 
 # 切換回非 root 用戶
 USER kasm-user
