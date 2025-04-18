@@ -1,0 +1,1 @@
+FROM kasmweb/fedora-40-desktop:1.16.1-rolling-daily

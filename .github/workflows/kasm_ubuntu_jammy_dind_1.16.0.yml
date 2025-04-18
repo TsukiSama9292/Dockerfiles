@@ -1,8 +1,10 @@
-name: UNSLOTH IMAGE
+name: Kasm Ubuntu Jammy dind 1.16.0
 
 on:
+  schedule:
+    - cron: '0 16 * * *'
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,10 +22,10 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build server images
+    - name: Build the Docker image
       run: |
-        docker build --pull --no-cache -f dockerfile.unsloth -t ${{ secrets.DOCKER_USERNAME }}/ai:unsloth-rolling .
+        docker build --pull --no-cache -f /kasm_workspace/ubuntu/1.16.0/dockerfile.jammy-dind -t ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest .
 
     - name: Push the Docker image to Docker Hub
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/ai:unsloth-rolling
+        docker push ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest
