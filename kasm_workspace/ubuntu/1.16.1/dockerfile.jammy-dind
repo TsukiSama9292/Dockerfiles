@@ -29,7 +29,7 @@ RUN wget https://dl.pstmn.io/download/latest/linux64 -O postman-linux-x64.tar.gz
     && rm postman-linux-x64.tar.gz
 
 # 安裝 Discord
-RUN wget https://discord.com/api/download?platform=linux&format=deb -O discord.deb \
+RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb \
     && sudo dpkg -i discord.deb \
     && sudo apt-get install -f -y \
     && rm discord.deb
