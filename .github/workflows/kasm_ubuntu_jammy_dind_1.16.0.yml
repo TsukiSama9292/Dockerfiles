@@ -24,8 +24,8 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build --pull --no-cache -f kasm_workspace/ubuntu/1.16.0/dockerfile.jammy-dind -t ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest .
+        docker build --pull --no-cache -f kasm_workspace/ubuntu/1.16.0/dockerfile.jammy-dind -t ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-rolling-daily .
 
     - name: Push the Docker image to Docker Hub
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/ubuntu-jammy-dind:1.16.0-rolling-daily
