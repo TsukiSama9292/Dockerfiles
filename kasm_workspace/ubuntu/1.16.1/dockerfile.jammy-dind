@@ -7,7 +7,12 @@ ENV DEBUG=false \
 # 安裝 gnome-keyring 
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
-RUN sudo apt install gnome-keyring -y && sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt install -y \
+    gnome-keyring \
+    htop \
+    tree
+
+RUN sudo rm -rf /var/lib/apt/lists/*
 
 # 安裝工具資料庫管理工具
 RUN wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
