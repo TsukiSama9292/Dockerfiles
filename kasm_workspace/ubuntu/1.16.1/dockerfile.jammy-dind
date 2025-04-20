@@ -15,12 +15,14 @@ RUN sudo apt install -y \
     p7zip-full
 
 # 安裝 NVM 和 Node.js
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash && \
-    echo "source \$HOME/.nvm/nvm.sh" >> ~/.bashrc && \
-    source ~/.bashrc && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+RUN echo "source \$HOME/.nvm/nvm.sh" >> ~/.bashrc
+
+# 目前 LTS 為 22
+RUN source ~/.bashrc && \
     nvm install node && \
-    nvm install lts && \
-    nvm alias default lts
+    nvm install 22 && \
+    nvm alias default 22
 
 # 設定環境變數以便 Node.js 和 npm 可用
 ENV NVM_DIR=/home/kasm_user/.nvm
