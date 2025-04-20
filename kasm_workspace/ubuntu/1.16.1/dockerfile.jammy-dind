@@ -19,7 +19,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | b
 RUN echo "source \$HOME/.nvm/nvm.sh" >> ~/.bashrc
 
 # 目前 LTS 為 22
-RUN source ~/.bashrc && \
+RUN export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
     nvm install node && \
     nvm install 22 && \
     nvm alias default 22
