@@ -7,11 +7,16 @@ ENV DEBUG=false \
 # 安裝 gnome-keyring 
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
+# 安裝常見工具
 RUN sudo apt install -y \
     gnome-keyring \
     htop \
     tree \
     p7zip-full
+
+# Node.js 和 npm 最新版
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+RUN sudo apt install nodejs
 
 RUN sudo rm -rf /var/lib/apt/lists/*
 
