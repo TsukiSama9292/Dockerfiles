@@ -4,9 +4,13 @@ ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
+# 切換到 root 用戶
+USER root
 # 檢查 KVM 群組是否已經存在，如果不存在才創建
 RUN if ! getent group kvm > /dev/null; then groupadd -g $(getent passwd kasm-user | cut -d: -f4) kvm; fi && \
     usermod -aG kvm kasm-user
+# 切換回非 root 用戶
+USER kasm-user
 
 # 安裝 gnome-keyring 
 RUN sudo apt-get update && sudo apt-get upgrade -y
