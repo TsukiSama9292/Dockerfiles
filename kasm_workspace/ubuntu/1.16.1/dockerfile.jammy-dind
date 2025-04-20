@@ -4,6 +4,10 @@ ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
+# 在容器內創建 `kvm` 群組並將 `kasm-user` 加入該群組
+RUN groupadd -g $(getent group kvm | cut -d: -f3) kvm && \
+    usermod -aG kvm kasm-user
+
 # 安裝 gnome-keyring 
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
