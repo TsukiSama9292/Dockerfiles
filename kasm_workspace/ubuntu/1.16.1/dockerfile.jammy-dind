@@ -4,8 +4,8 @@ ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
-# 在容器內創建 `kvm` 群組並將 `kasm-user` 加入該群組
-RUN groupadd -g $(getent group kvm | cut -d: -f3) kvm && \
+# 檢查 KVM 群組是否已經存在，如果不存在才創建
+RUN if ! getent group kvm > /dev/null; then groupadd -g $(getent passwd kasm-user | cut -d: -f4) kvm; fi && \
     usermod -aG kvm kasm-user
 
 # 安裝 gnome-keyring 
