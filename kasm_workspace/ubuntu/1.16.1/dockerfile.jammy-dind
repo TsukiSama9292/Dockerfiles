@@ -10,7 +10,8 @@ RUN sudo apt-get update && sudo apt-get upgrade -y
 RUN sudo apt install -y \
     gnome-keyring \
     htop \
-    tree
+    tree \
+    p7zip-full
 
 RUN sudo rm -rf /var/lib/apt/lists/*
 
