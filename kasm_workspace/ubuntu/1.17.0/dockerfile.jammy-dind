@@ -4,10 +4,8 @@ ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
-# 安裝 gnome-keyring 
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
-# 安裝常見工具
 RUN sudo apt install -y \
     gnome-keyring \
     htop \
@@ -41,6 +39,12 @@ RUN sudo curl -L -o docker-compose-linux-x86_64 https://github.com/docker/compos
 RUN sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
 RUN sudo chmod +x /usr/local/bin/docker-compose
 
+# 安裝 Discord
+RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb \
+    && sudo dpkg -i discord.deb \
+    && sudo apt-get install -f -y \
+    && rm discord.deb
+
 # 建立工作目錄
 RUN mkdir /home/kasm-user/workspace
 
@@ -48,12 +52,6 @@ RUN mkdir /home/kasm-user/workspace
 RUN wget https://dl.pstmn.io/download/latest/linux64 -O postman-linux-x64.tar.gz \
     && sudo tar -xvzf postman-linux-x64.tar.gz -C /opt \
     && rm postman-linux-x64.tar.gz
-
-# 安裝 Discord
-RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb \
-    && sudo dpkg -i discord.deb \
-    && sudo apt-get install -f -y \
-    && rm discord.deb
 
 # 切換到 root 用戶
 USER root
@@ -71,4 +69,8 @@ RUN chmod +x /usr/share/applications/postman.desktop
 # 切換回非 root 用戶
 USER kasm-user
 
+RUN mkdir -p /home/kasm-user/Desktop
+
+RUN curl -LsSf https://astral.sh/uv/0.6.17/install.sh | sh
+ENV PATH="/home/kasm-user/.local/bin:$PATH"
 RUN sudo rm -rf /var/lib/apt/lists/*

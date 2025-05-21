@@ -15,6 +15,7 @@
 
 ## 鏡像編譯(測試用)
 ```bash
-docker build -f "dockerfile.jammy-dind-rolling-daily" -t "tsukisama9292/ubuntu-jammy-dind:1.17.0-rolling-daily" .
+cd kasm_workspace/ubuntu/1.17.0
+docker build --pull --no-cache -f dockerfile.jammy-dind -t tsukisama9292/ubuntu-jammy-dind:1.17.0-rolling-daily .
 docker run --rm -it --shm-size=512m -p 6901:6901 -e VNC_PW=password tsukisama9292/ubuntu-jammy-dind:1.17.0-rolling-daily
 ```
