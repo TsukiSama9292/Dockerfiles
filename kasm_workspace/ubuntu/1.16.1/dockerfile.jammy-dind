@@ -30,8 +30,6 @@ ENV NVM_DIR=/home/kasm_user/.nvm
 ENV NODE_VERSION=default
 ENV PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
-RUN sudo rm -rf /var/lib/apt/lists/*
-
 # 安裝工具資料庫管理工具
 RUN wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
 RUN sudo dpkg -i dbeaver-ce_latest_amd64.deb
@@ -72,3 +70,8 @@ RUN chmod +x /usr/share/applications/postman.desktop
 
 # 切換回非 root 用戶
 USER kasm-user
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+RUN sudo rm -rf /var/lib/apt/lists/*
