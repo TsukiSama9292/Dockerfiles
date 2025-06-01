@@ -70,6 +70,7 @@ RUN chmod +x /usr/share/applications/postman.desktop
 
 # 切換回非 root 用戶
 USER kasm-user
+RUN mkdir -p /home/kasm-user/Desktop
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
