@@ -1,0 +1,37 @@
+name: Online Judge Images
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build judge images
+      run: |
+        docker build --pull --no-cache -f online_judge/python/dockerfile.python_3.10 -t ${{ secrets.DOCKER_USERNAME }}/judge:python3.10-slim .
+        docker build --pull --no-cache -f online_judge/python/dockerfile.python_3.11 -t ${{ secrets.DOCKER_USERNAME }}/judge:python3.11-slim .
+        docker build --pull --no-cache -f online_judge/python/dockerfile.python_3.12 -t ${{ secrets.DOCKER_USERNAME }}/judge:python3.12-slim .
+        docker build --pull --no-cache -f online_judge/python/dockerfile.python_3.13 -t ${{ secrets.DOCKER_USERNAME }}/judge:python3.13-slim .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:python3.10-slim
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:python3.11-slim
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:python3.12-slim
+        docker push ${{ secrets.DOCKER_USERNAME }}/judge:python3.13-slim
