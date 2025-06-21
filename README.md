@@ -14,3 +14,6 @@
 
 ### online_judge
 放置 k12edu 團隊的程式解題網站的 dockerfile，方面管理。
+
+
+docker build --pull --no-cache -f kasm_workspace/steam/dockerfile --build-arg BASE_TAG=1.17.0-rolling-daily -t tsukisama9292/steam:1.17.0-rolling-daily .
