@@ -39,7 +39,8 @@ RUN \
 
 # kasm_user no password sudo
 RUN echo "kasm-user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kasm-user
-
+RUN mkdir -p /home/kasm-user/workspace && \
+    chown -R 1000:0 /home/kasm-user/workspace
 # Userspace Runtime
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
