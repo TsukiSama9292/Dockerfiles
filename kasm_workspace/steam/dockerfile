@@ -65,6 +65,6 @@ RUN bash -c 'for SCRIPT in $USER_INST_SCRIPTS; do \
     echo "Running: ${USER_INST_DIR}${SCRIPT}"; \
     chmod +x ${USER_INST_DIR}${SCRIPT} && \
     bash ${USER_INST_DIR}${SCRIPT} || exit 1; \
-  done && rm -rf ${USER_INST_DIR}'
+  done && sudo rm -rf ${USER_INST_DIR}'
 
 CMD ["--tail-log"]
