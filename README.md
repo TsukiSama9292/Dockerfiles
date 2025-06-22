@@ -17,3 +17,4 @@
 
 
 docker build --pull --no-cache -f kasm_workspace/steam/dockerfile --build-arg BASE_TAG=1.17.0-rolling-daily -t tsukisama9292/steam:1.17.0-rolling-daily .
+docker build -f kasm_workspace/steam/dockerfile --build-arg BASE_TAG=1.17.0-rolling-daily -t tsukisama9292/steam:1.17.0-rolling-daily .

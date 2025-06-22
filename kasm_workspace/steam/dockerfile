@@ -46,6 +46,25 @@ RUN mkdir -p /home/kasm-user/workspace && \
 # Userspace Runtime
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
-USER 1000
+
+ENV USER_INST_DIR=$HOME/install \
+    USER_INST_SCRIPTS="/ubuntu/install/user_1000_install_tools/install_tools.sh \
+                      /ubuntu/install/user_1000_install_tools//cleaner.sh"
+
+COPY ./src/ $USER_INST_DIR
+
+# 安裝 script 設定
+ENV USER_INST_DIR=$HOME/install
+
+# COPY 並設 chown，確保 UID 1000 可修改
+COPY --chown=1000:0 ./src/ $HOME/install
+
+USER kasm-user
+
+RUN bash -c 'for SCRIPT in $USER_INST_SCRIPTS; do \
+    echo "Running: ${USER_INST_DIR}${SCRIPT}"; \
+    chmod +x ${USER_INST_DIR}${SCRIPT} && \
+    bash ${USER_INST_DIR}${SCRIPT} || exit 1; \
+  done && rm -rf ${USER_INST_DIR}'
 
 CMD ["--tail-log"]
