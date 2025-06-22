@@ -8,6 +8,7 @@ apt-get install -y steam-installer
 
 # Desktop icon
 cp /usr/share/applications/steam.desktop $HOME/Desktop/
+sed -i 's|^Exec=/usr/games/steam %U$|Exec=/usr/games/steam %U -cef-disable-gpu|' $HOME/Desktop/steam.desktop
 chmod +x $HOME/Desktop/steam.desktop
 
 # Cleanup for app layer
