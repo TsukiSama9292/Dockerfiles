@@ -1,4 +1,11 @@
-# TsukiSama9292/Dockerfiles 存放各類 Dockerfile
+# [TsukiSama9292/Dockerfiles 存放各類 Dockerfile](https://github.com/TsukiSama9292/Dockerfiles)
+
+<div align="center">
+  <p>  
+    <a href="https://github.com/TsukiSama9292/Dockerfiles/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="MIT License" /></a>
+    <a href="https://deepwiki.com/TsukiSama9292/Dockerfiles"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>
+  </p>
+</div>
 
 ## 儲存庫功能
 1. 每日定時更新鏡像，保持鏡像最新版本，減少資安漏洞。
@@ -15,6 +22,6 @@
 ### online_judge
 放置 k12edu 團隊的程式解題網站的 dockerfile，方面管理。
 
-
-docker build --pull --no-cache -f kasm_workspace/steam/dockerfile --build-arg BASE_TAG=1.17.0-rolling-daily -t tsukisama9292/steam:1.17.0-rolling-daily .
-docker build -f kasm_workspace/steam/dockerfile --build-arg BASE_TAG=1.17.0-rolling-daily -t tsukisama9292/steam:1.17.0-rolling-daily .
+### src
+來源於[kasmtech/workspaces-images](https://github.com/kasmtech/workspaces-images)的腳本資料夾(複製時間: 2025-06-21)，哈希值: 062a0bff63b6e3953f4540c8f0d6289c44493d24  
+內部的腳本用於建制 Kasm VNC 相關鏡像。  
