@@ -19,6 +19,11 @@
 ### kasm_workspace
 放置 Kasm Workspace 相關的 VNC dockerfile，便於開發者在 Kasm Workspace 保持開箱即用的環境，鏡像中已安裝常見的開發工具。
 
+| 鏡像 | 功能 | 維護狀態 |
+|:---:|:---:|:---:|
+| <img src="https://img.shields.io/badge/Docker-ubuntu--jammy-blue?style=flat-square&logo=docker&logoColor=white" alt="Ubuntu Jammy badge"><br>[ubuntu‑jammy‑dind](https://hub.docker.com/r/tsukisama9292/ubuntu-jammy-dind) | <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu logo" width="20"> 適用於開發全端伺服器 | 🟢 積極 |
+| <img src="https://img.shields.io/badge/Docker-steam-black?style=flat-square&logo=steam&logoColor=white" alt="Steam badge"><br>[steam](https://hub.docker.com/r/tsukisama9292/steam) | <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/steam.svg" alt="Steam logo" width="20"> 適用於遊戲玩家 | 🟢 積極 |
+
 ### online_judge
 放置 k12edu 團隊的程式解題網站的 dockerfile，方面管理。
 
