@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/misc/install_tools.sh \
                   /ubuntu/install/chrome/install_chrome.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
-                  /ubuntu/install/steam/install_steam_deb.sh \
+                  /ubuntu/install/steam/install_steam.sh \
                   /ubuntu/install/uv/install_uv.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
