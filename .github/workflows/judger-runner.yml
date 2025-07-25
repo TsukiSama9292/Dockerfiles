@@ -1,0 +1,93 @@
+name: judger-runner
+
+on:
+  schedule:
+    - cron: '0 16 1 * *'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Python Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/python/Dockerfile --build-arg PYTHON_TAG=3.9-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.9 .
+        docker build --pull --no-cache -f judger-runner/python/Dockerfile --build-arg PYTHON_TAG=3.10-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.10 .
+        docker build --pull --no-cache -f judger-runner/python/Dockerfile --build-arg PYTHON_TAG=3.11-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.11 .
+        docker build --pull --no-cache -f judger-runner/python/Dockerfile --build-arg PYTHON_TAG=3.12-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.12 .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.9 .
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.10 .
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.11 .
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.12 .
+    
+    - name: Remove images
+      run: |
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.9
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.10
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.11
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.12
+    
+    - name: Build Node.js Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=18-bookworm-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-18 .
+        docker build --pull --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=20-bookworm-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-20 .
+        docker build --pull --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=22-bookworm-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-22 .
+        docker build --pull --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=lts-bookworm-slim -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-lts .
+    
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-18
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-20
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-22
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-lts
+    
+    - name: Remove images
+      run: |
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-18
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-20
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-22
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:node-lts
+        
+    - name: Build JDK Images
+      run: |
+        docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=11 -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-11 .
+        docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=17 -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-17 .
+        docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=21 -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-21 .
+        
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-11
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-17
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-21
+    
+    - name: Remove images
+      run: |
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-11
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-17
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:jdk-21
+    
+    - name: Build GCC Images
+      run: |
+        docker build --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=14-bookworm -t tsukisama9292/judger-runner:gcc-14 .
+        docker build --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:gcc-15 .
+        
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push tsukisama9292/judger-runner:gcc-14
+        docker push tsukisama9292/judger-runner:gcc-15
