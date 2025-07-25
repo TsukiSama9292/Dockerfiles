@@ -1,25 +1,49 @@
-### 編譯鏡像
+# 程式碼 - 編譯 & 執行
+
+## C 語言
+### 輸入
 ```bash
-docker build --no-cache -f judger-runner/python/Dockerfile --build-arg PYTHON_TAG=3.12-slim -t tsukisama9292/judger-runner:python-3.12 .
+docker pull tsukisama9292/judger-runner:gcc-14
+docker run -t -d --name gcc-14 tsukisama9292/judger-runner:gcc-14
+docker exec -it gcc-14 bash -c "python3 runner.py --filename test.c --cleanup"
 ```
-```bash
-docker run -t -d tsukisama9292/judger-runner:python-3.12
+### 預期結果
+```json
+{'stage': 'run', 'stdout': 'Sum: 49999995000000\n', 'stderr': '', 'returncode': 0, 'time_wall_sec': 0.09726309776306152, 'cpu_utime': 0.08184899999999999, 'cpu_stime': 0.002738, 'maxrss_mb': 13.30078125}
 ```
+
+## C++
+### 輸入
 ```bash
-docker build --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=lts-bookworm-slim -t tsukisama9292/judger-runner:node-lts .
+docker pull tsukisama9292/judger-runner:gcc-14
+docker run -t -d --name gcc-14 tsukisama9292/judger-runner:gcc-14
+docker exec -it gcc-14 bash -c "python3 runner.py --filename test.cpp --cleanup"
 ```
-```bash
-docker run -t -d tsukisama9292/judger-runner:node-lts
+### 預期結果
+```json
+{'stage': 'run', 'stdout': 'Sum: 49999995000000\n', 'stderr': '', 'returncode': 0, 'time_wall_sec': 0.09913969039916992, 'cpu_utime': 0.083413, 'cpu_stime': 0.0036769999999999997, 'maxrss_mb': 13.109375}
 ```
+
+## Python
+### 執行
 ```bash
-docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=11 -t tsukisama9292/judger-runner:jdk-11 .
+docker pull tsukisama9292/judger-runner:python-3.11
+docker run -t -d --name python-311 tsukisama9292/judger-runner:python-3.11
+docker exec -it python-311 bash -c "python3 runner.py --filename test.py --cleanup"
 ```
-```bash
-docker run -t -d tsukisama9292/judger-runner:jdk-11
+### 預期結果
+```json
+{'stage': 'run', 'stdout': 'Sum: 49999995000000\n', 'stderr': '', 'returncode': 0, 'time_wall_sec': 0.4228065013885498, 'cpu_utime': 0.269628, 'cpu_stime': 0.149334, 'maxrss_mb': 390.30859375}
 ```
+
+## Java
+### 輸入
 ```bash
-docker build --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:gcc-15 .
+docker pull tsukisama9292/judger-runner:jdk-17
+docker run -t -d --name jdk-17 tsukisama9292/judger-runner:jdk-17
+docker exec -it jdk-17 bash -c "python3 runner.py --filename Test.java --cleanup"
 ```
-```bash
-docker run -t -d tsukisama9292/judger-runner:gcc-15
+### 預期輸出
+```json
+
 ```

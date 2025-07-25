@@ -112,3 +112,17 @@ def auto_compile_and_run(src_path, cleanup=False):
 
     else:
         return {"error": f"Unsupported extension: {ext}"}
+
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="Compile and run a file using runner.")
+    parser.add_argument("--filename", type=str, default="main.py", help="The filename to compile and run.")
+    parser.add_argument("--cleanup", action="store_true", help="Remove the compiled executable after running.")
+    args = parser.parse_args()
+
+    result = auto_compile_and_run(args.filename, cleanup=args.cleanup)
+    print(result)
+
+if __name__ == "__main__":
+    main()

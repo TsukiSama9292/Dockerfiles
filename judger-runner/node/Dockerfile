@@ -8,5 +8,4 @@ RUN apt-get update && \
 RUN mkdir /app
 WORKDIR /app
 COPY judger-runner/runner.py /app/runner.py
-COPY judger-runner/caller.py /app/caller.py
 COPY judger-runner/node/test.js /app/test.js

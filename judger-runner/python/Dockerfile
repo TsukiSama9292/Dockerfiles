@@ -4,5 +4,4 @@ FROM python:${PYTHON_TAG}
 RUN mkdir /app
 WORKDIR /app
 COPY judger-runner/runner.py /app/runner.py
-COPY judger-runner/caller.py /app/caller.py
 COPY judger-runner/python/test.py /app/test.py
