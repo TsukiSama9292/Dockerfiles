@@ -91,3 +91,38 @@ jobs:
       run: |
         docker push tsukisama9292/judger-runner:gcc-14
         docker push tsukisama9292/judger-runner:gcc-15
+    
+    - name: Remove images
+      run: |
+        docker rmi tsukisama9292/judger-runner:gcc-14
+        docker rmi tsukisama9292/judger-runner:gcc-15
+    
+    - name: Build Rust Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/rust/Dockerfile --build-arg RUST_TAG=latest -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-latest .
+        docker build --pull --no-cache -f judger-runner/rust/Dockerfile --build-arg RUST_TAG=1.88-bookworm -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-1.88 .
+    
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-1.88
+    
+    - name: Remove images
+      run: |
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-latest
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:rust-1.88
+        
+    - name: Build Go Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/go/Dockerfile --build-arg GO_TAG=latest -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-latest .
+        docker build --pull --no-cache -f judger-runner/go/Dockerfile --build-arg GO_TAG=1.24-bookworm -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-1.24 .
+    
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-1.24
+    
+    - name: Remove images
+      run: |
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-latest
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/judger-runner:go-1.24
