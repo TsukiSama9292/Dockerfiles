@@ -31,10 +31,10 @@ jobs:
 
     - name: Push the Docker image to Docker Hub
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.9 .
-        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.10 .
-        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.11 .
-        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.12 .
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.9
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.10
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.11
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:python-3.12
     
     - name: Remove images
       run: |
