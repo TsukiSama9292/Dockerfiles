@@ -10,7 +10,11 @@ RUN sudo apt install -y \
     gnome-keyring \
     htop \
     tree \
-    p7zip-full
+    p7zip-full \
+    nmap \
+    traceroute \
+    tcptraceroute
+    
 
 # 安裝 NVM 和 Node.js
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
