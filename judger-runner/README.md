@@ -12,10 +12,10 @@ docker build --no-cache -f judger-runner/node/Dockerfile --build-arg NODE_TAG=lt
 docker run -t -d tsukisama9292/judger-runner:node-lts
 ```
 ```bash
-docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=17 -t tsukisama9292/judger-runner:jdk-17 .
+docker build --no-cache -f judger-runner/jdk/Dockerfile --build-arg JDK_TAG=11 -t tsukisama9292/judger-runner:jdk-11 .
 ```
 ```bash
-docker run -t -d tsukisama9292/judger-runner:jdk-17
+docker run -t -d tsukisama9292/judger-runner:jdk-11
 ```
 ```bash
 docker build --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:gcc-15 .
