@@ -4,6 +4,7 @@ import resource
 import subprocess
 from multiprocessing import Process, Manager
 import re
+import shutil
 
 def strip_ansi(s):
     ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
@@ -61,7 +62,7 @@ def measure(cmd, collect_stats=True):
             })
         return output
 
-def auto_compile_and_run(src_path, cleanup=False):
+def auto_compile_and_run(src_path, db, cleanup=False):
     ext = os.path.splitext(src_path)[1]
     filename = os.path.basename(src_path)
     name = os.path.splitext(filename)[0]
@@ -144,18 +145,40 @@ def auto_compile_and_run(src_path, cleanup=False):
 
     elif ext == ".sh":
         # print(f"[執行 Shell] bash {src_path}")
-        return {"stage": "run", **measure(f"bash {src_path}")}
+        return {"stage": "run", **measure(f"chmod +x {src_path} && bash {src_path}")}
+
 
     elif ext == ".cs":
-        exe = f"./{name}_out"
-        # print(f"[編譯 C#] mcs {src_path} -out:{exe}")
-        compile_result = measure(f"mcs {src_path} -out:{exe}", collect_stats=False)
-        if compile_result["returncode"] != 0:
-            return {"stage": "compile", **compile_result}
-        run_result = measure(f"mono {exe}")
+        proj_dir = f"./{name}_proj"
+        if os.path.exists(proj_dir):
+            shutil.rmtree(proj_dir)  # 清除舊專案
+        os.mkdir(proj_dir)
+
+        init_result = measure(f"dotnet new console -o {proj_dir} --force", collect_stats=False)
+        if init_result["returncode"] != 0:
+            return {"stage": "init_project", **init_result}
+
+        target_cs = os.path.join(proj_dir, "Program.cs")
+        try:
+            shutil.copy(src_path, target_cs)
+        except Exception as e:
+            return {"stage": "copy_source", "stderr": str(e), "returncode": -1}
+
+        # 編譯
+        build_result = measure(f"dotnet build -c Release {proj_dir}", collect_stats=False)
+        if build_result["returncode"] != 0:
+            return {"stage": "compile", **build_result}
+
+        # 執行
+        run_result = measure(f"dotnet run --no-build -c Release --project {proj_dir}")
+
+        # 執行完清理 (如果需要)
         if cleanup:
-            try: os.remove(exe)
-            except Exception as e: print(f"[清理失敗] {exe}: {e}")
+            try:
+                shutil.rmtree(proj_dir)
+            except Exception as e:
+                print(f"[清理失敗] {proj_dir}: {e}")
+
         return {"stage": "run", **run_result}
 
     elif ext == ".kt":
@@ -171,13 +194,24 @@ def auto_compile_and_run(src_path, cleanup=False):
         return {"stage": "run", **run_result}
 
     elif ext == ".ts":
-        # print(f"[執行 TypeScript] ts-node {src_path}")
-        return {"stage": "run", **measure(f"ts-node {src_path}")}
+        # 編譯 TypeScript
+        js_file = f"./{name}.js"
+        compile_result = measure(f"tsc {src_path} --outDir ./", collect_stats=False)
+        if compile_result["returncode"] != 0:
+            return {"stage": "compile", **compile_result}
+        # 執行編譯後的 JavaScript
+        run_result = measure(f"node {js_file}")
+        # 執行完後清理編譯產物（如果 cleanup=True）
+        if cleanup:
+            try:
+                os.remove(js_file)
+            except Exception as e:
+                print(f"[清理失敗] {js_file}: {e}")
+        return {"stage": "run", **run_result}
 
     elif ext == ".sql":
         # print(f"[執行 SQL] sqlite3 {src_path}")
-        return {"stage": "run", **measure(f"sqlite3 {src_path}")}
-
+        return {"stage": "run", **measure(f"sqlite3 {db} < {src_path}")}
     else:
         return {"error": f"Unsupported extension: {ext}"}
 
@@ -186,10 +220,11 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="Compile and run a file using runner.")
     parser.add_argument("--filename", type=str, default="main.py", help="The filename to compile and run.")
+    parser.add_argument("--db", type=str, default="test.db", help="The SQLite database file.")
     parser.add_argument("--cleanup", action="store_true", help="Remove the compiled executable after running.")
     args = parser.parse_args()
 
-    result = auto_compile_and_run(args.filename, cleanup=args.cleanup)
+    result = auto_compile_and_run(args.filename, db=args.db, cleanup=args.cleanup)
     print(result)
 
 if __name__ == "__main__":

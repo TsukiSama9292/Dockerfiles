@@ -1,0 +1,33 @@
+name: judger-runner net
+
+on:
+  schedule:
+    - cron: '0 16 1 * *'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build NET Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/net/Dockerfile --build-arg NET_TAG=8.0-alpine -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:net-8.0-alpine .
+        docker build --pull --no-cache -f judger-runner/net/Dockerfile --build-arg NET_TAG=9.0-alpine -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:net-9.0-alpine .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:net-8.0-alpine
+        docker push ${{ secrets.DOCKER_USERNAME }}/judger-runner:net-9.0-alpine

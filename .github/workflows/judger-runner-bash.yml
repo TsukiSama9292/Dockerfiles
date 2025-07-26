@@ -1,0 +1,35 @@
+name: judger-runner bash
+
+on:
+  schedule:
+    - cron: '0 16 1 * *'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build Bash Images
+      run: |
+        docker build --pull --no-cache -f judger-runner/bash/Dockerfile --build-arg BASH_TAG=5.2 -t tsukisama9292/judger-runner:bash-5.2 .
+        docker build --pull --no-cache -f judger-runner/bash/Dockerfile --build-arg BASH_TAG=5.3 -t tsukisama9292/judger-runner:bash-5.3 .
+        docker build --pull --no-cache -f judger-runner/bash/Dockerfile --build-arg BASH_TAG=latest -t tsukisama9292/judger-runner:bash-latest .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker push tsukisama9292/judger-runner:bash-5.2
+        docker push tsukisama9292/judger-runner:bash-5.3
+        docker push tsukisama9292/judger-runner:bash-latest

@@ -1,0 +1,1 @@
+SELECT data FROM NewTable WHERE id = 1;
