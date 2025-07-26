@@ -24,8 +24,8 @@ jobs:
     
     - name: Build Golang Images
       run: |
-        docker build --pull --no-cache -f judger-runner/go/Dockerfile --build-arg GO_TAG=1.24-bookworm -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:golang-1.24 .
-        docker build --pull --no-cache -f judger-runner/go/Dockerfile --build-arg GO_TAG=latest -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:golang-latest .
+        docker build --pull --no-cache -f judger-runner/golang/Dockerfile --build-arg GO_TAG=1.24-bookworm -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:golang-1.24 .
+        docker build --pull --no-cache -f judger-runner/golang/Dockerfile --build-arg GO_TAG=latest -t ${{ secrets.DOCKER_USERNAME }}/judger-runner:golang-latest .
 
     - name: Push the Docker image to Docker Hub
       run: |
