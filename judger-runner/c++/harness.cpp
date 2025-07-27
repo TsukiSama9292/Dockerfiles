@@ -520,7 +520,60 @@ private:
     static void save_result(const std::string& filename, const json& result) {
         std::ofstream file(filename);
         if (file) {
-            file << result.dump(2) << std::endl;
+            // Manually control JSON field order to match C version
+            file << "{\n";
+            
+            // Required fields in specific order
+            if (result.contains("status")) {
+                file << "  \"status\": " << result["status"] << ",\n";
+            }
+            if (result.contains("stdout")) {
+                file << "  \"stdout\": " << result["stdout"] << ",\n";
+            }
+            if (result.contains("stderr")) {
+                file << "  \"stderr\": " << result["stderr"] << ",\n";
+            }
+            if (result.contains("time_ms")) {
+                file << "  \"time_ms\": " << result["time_ms"] << ",\n";
+            }
+            if (result.contains("cpu_utime")) {
+                file << "  \"cpu_utime\": " << result["cpu_utime"] << ",\n";
+            }
+            if (result.contains("cpu_stime")) {
+                file << "  \"cpu_stime\": " << result["cpu_stime"] << ",\n";
+            }
+            if (result.contains("maxrss_mb")) {
+                file << "  \"maxrss_mb\": " << result["maxrss_mb"] << ",\n";
+            }
+            if (result.contains("compile_time_ms")) {
+                file << "  \"compile_time_ms\": " << result["compile_time_ms"];
+                if (result.contains("expected") || result.contains("actual") || result.contains("match")) {
+                    file << ",\n";
+                } else {
+                    file << "\n";
+                }
+            }
+            if (result.contains("expected")) {
+                file << "  \"expected\": " << result["expected"];
+                if (result.contains("actual") || result.contains("match")) {
+                    file << ",\n";
+                } else {
+                    file << "\n";
+                }
+            }
+            if (result.contains("actual")) {
+                file << "  \"actual\": " << result["actual"];
+                if (result.contains("match")) {
+                    file << ",\n";
+                } else {
+                    file << "\n";
+                }
+            }
+            if (result.contains("match")) {
+                file << "  \"match\": " << (result["match"].get<bool>() ? "true" : "false") << "\n";
+            }
+            
+            file << "}\n";
         }
     }
     

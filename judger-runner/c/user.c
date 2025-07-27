@@ -1,8 +1,6 @@
 int solve(int *a, int *b) {
-    printf("Hello from user.c!\n");
-    printf("Input: a=%d, b=%d\n", *a, *b);
+    // Simple solve function: double a, add 5 to b
     *a = *a * 2;
     *b = *b + 5;
-    printf("Output: a=%d, b=%d\n", *a, *b);
     return 0;
 }
