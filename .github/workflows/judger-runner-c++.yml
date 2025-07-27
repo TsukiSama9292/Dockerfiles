@@ -24,6 +24,7 @@ jobs:
     
     - name: Build C++ Images
       run: |
+        cd judger-runner/c++
         docker build --pull --no-cache --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:c_plus_plus .
     
     - name: CI Test
