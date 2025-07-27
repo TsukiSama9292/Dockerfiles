@@ -1,0 +1,10 @@
+{
+  "solve_params": [
+    {"name": "n", "input_value": 5},
+    {"name": "factorial", "input_value": 0}
+  ],
+  "expected": {
+    "n": 5,
+    "factorial": 120
+  }
+}

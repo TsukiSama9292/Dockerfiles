@@ -1,0 +1,10 @@
+{
+  "solve_params": [
+    {"name": "number", "input_value": 5},
+    {"name": "result", "input_value": 0}
+  ],
+  "expected": {
+    "number": 5,
+    "result": 25
+  }
+}

@@ -9,5 +9,4 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY judger-runner/runner.py /app/runner.py
-COPY judger-runner/gcc/test.c /app/test.c
-COPY judger-runner/gcc/test.cpp /app/test.cpp
+COPY judger-runner/gcc/* /app/

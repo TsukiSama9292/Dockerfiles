@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import resource
 import subprocess
@@ -62,22 +63,54 @@ def measure(cmd, collect_stats=True):
             })
         return output
 
-def auto_compile_and_run(src_path, db, cleanup=False):
+def run_harness(harness_cmd):
+    # harness 需要 config.json 和 result.json 參數
+    full_cmd = f"{harness_cmd} config.json result.json"
+    result = measure(full_cmd)
+    if os.path.exists("result.json"):
+        try:
+            with open("result.json") as f:
+                harness_data = json.load(f)
+            os.remove("result.json")
+            result.update(harness_data)
+        except Exception as e:
+            result['stderr'] += f"\n[runner.py] Failed to parse harness JSON: {e}"
+            result['returncode'] = -2
+    else:
+        result['stderr'] += "\n[runner.py] result.json not found"
+        result['returncode'] = -3
+    return result
+
+def auto_compile_and_run(src_path, db, use_harness=False, cleanup=False):
     ext = os.path.splitext(src_path)[1]
     filename = os.path.basename(src_path)
     name = os.path.splitext(filename)[0]
 
     if ext == ".c":
+        harness_path = "harness.c"
         exe = f"./{name}_out"
-        # print(f"[編譯 C] gcc {src_path} -o {exe}")
-        compile_result = measure(f"gcc {src_path} -o {exe}", collect_stats=False)
-        if compile_result["returncode"] != 0:
-            return {"stage": "compile", **compile_result}
-        run_result = measure(exe)
-        if cleanup:
-            try: os.remove(exe)
-            except Exception as e: print(f"[清理失敗] {exe}: {e}")
-        return {"stage": "run", **run_result}
+        if use_harness:
+            # print(f"[編譯 C] gcc {src_path} {harness_path} -o {exe} -lcjson")
+            if not os.path.exists(harness_path):
+                return {"error": "Harness file not found."}
+            compile_result = measure(f"gcc {src_path} {harness_path} -o {exe} -lcjson", collect_stats=False)
+            if compile_result["returncode"] != 0:
+                return {"stage": "compile", **compile_result}
+            run_result = run_harness(exe)
+            if cleanup:
+                try: os.remove(exe)
+                except Exception as e: print(f"[清理失敗] {exe}: {e}")
+            return {"stage": "run", **run_result}
+        else:
+            # print(f"[編譯 C] gcc {src_path} -o {exe}")
+            compile_result = measure(f"gcc {src_path} -o {exe}", collect_stats=False)
+            if compile_result["returncode"] != 0:
+                return {"stage": "compile", **compile_result}
+            run_result = measure(exe)
+            if cleanup:
+                try: os.remove(exe)
+                except Exception as e: print(f"[清理失敗] {exe}: {e}")
+            return {"stage": "run", **run_result}
 
     elif ext == ".cpp":
         exe = f"./{name}_out"
@@ -221,10 +254,11 @@ def main():
     parser = argparse.ArgumentParser(description="Compile and run a file using runner.")
     parser.add_argument("--filename", type=str, default="main.py", help="The filename to compile and run.")
     parser.add_argument("--db", type=str, default="test.db", help="The SQLite database file.")
+    parser.add_argument("--use-harness", action="store_true", help="Use the harness for running the code.")
     parser.add_argument("--cleanup", action="store_true", help="Remove the compiled executable after running.")
     args = parser.parse_args()
 
-    result = auto_compile_and_run(args.filename, db=args.db, cleanup=args.cleanup)
+    result = auto_compile_and_run(args.filename, db=args.db, use_harness=args.use_harness, cleanup=args.cleanup)
     print(result)
 
 if __name__ == "__main__":

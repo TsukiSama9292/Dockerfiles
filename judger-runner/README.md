@@ -44,7 +44,10 @@ python3 runner.py --filename [script_path] --db [db_path] --cleanup
 ```bash
 docker pull tsukisama9292/judger-runner:gcc-14
 docker run -t -d --name gcc-14 tsukisama9292/judger-runner:gcc-14
+# 直接執行
 docker exec -it gcc-14 bash -c "python3 runner.py --filename test.c --cleanup"
+# 使用 harness 得到精準 solve 函數結果與
+docker exec -it gcc-14 bash -c "python3 runner.py --filename user.c --use-harness --cleanup"
 ```
 ### 預期結果
 ```json
