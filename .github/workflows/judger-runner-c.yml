@@ -24,10 +24,13 @@ jobs:
     
     - name: Build C Images
       run: |
-        docker build --pull --no-cache -f judger-runner/c/Dockerfile --build-arg GCC_TAG=14-bookworm -t tsukisama9292/judger-runner:c-gcc-14 .
-        docker build --pull --no-cache -f judger-runner/c/Dockerfile --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:c-gcc-15 .
+        cd judger-runner/c
+        docker build --pull --no-cache --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:c .
+    
+    - name: CI Test
+      run: |
+        docker run --rm tsukisama9292/judger-runner:c make test-ci
 
     - name: Push the Docker image to Docker Hub
       run: |
-        docker push tsukisama9292/judger-runner:c-gcc-14
-        docker push tsukisama9292/judger-runner:c-gcc-15
+        docker push tsukisama9292/judger-runner:c

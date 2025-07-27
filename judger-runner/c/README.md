@@ -77,6 +77,24 @@ make build
 
 #### 步驟 2：創建配置文件
 
+創建 `config.json`（支援語言版本參數）：
+
+```json
+{
+  "solve_params": [
+    {"name": "a", "input_value": 3},
+    {"name": "b", "input_value": 4}
+  ],
+  "expected": {"a": 6, "b": 9},
+  "c_standard": "c11",
+  "compiler_flags": "-Wall -Wextra -O2"
+}
+```
+
+**新增支援的語言版本參數：**
+- `c_standard`：指定 C 標準 (c89, c99, c11, c17, c23)
+- `compiler_flags`：自定義編譯器標誌
+
 創建 `config.json`：
 
 ```json

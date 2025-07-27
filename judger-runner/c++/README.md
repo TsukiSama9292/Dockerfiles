@@ -74,7 +74,7 @@ make build
 
 #### 步驟 2：創建配置文件
 
-創建 `config.json`：
+創建 `config.json`（支援語言版本參數）：
 
 ```json
 {
@@ -83,8 +83,25 @@ make build
     {"name": "b", "type": "int", "input_value": 4}
   ],
   "expected": {"a": 6, "b": 9},
-  "function_type": "int"
+  "function_type": "int",
+  "cpp_standard": "c++20",
+  "compiler_flags": "-Wall -Wextra -O2"
 }
+```
+
+**新增支援的語言版本參數：**
+- `cpp_standard`：指定 C++ 標準 (c++11, c++14, c++17, c++20, c++23)
+- `compiler_flags`：自定義編譯器標誌
+
+#### 測試語言版本
+
+```bash
+# 測試不同 C++ 標準
+make test-cpp20   # 使用 C++20
+make test-cpp23   # 使用 C++23
+
+# 使用自定義配置
+make test-config CONFIG_FILE=config_cpp20.json
 ```
 
 #### 步驟 3：實現用戶函數

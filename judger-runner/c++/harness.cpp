@@ -371,7 +371,7 @@ public:
             CodeGenerator::generate_test_main(config);
             
             // Compile
-            auto compile_result = compile_program();
+            auto compile_result = compile_program(config_file);
             double compile_time = compile_timer.elapsed_ms();
             
             if (!compile_result.success) {
@@ -452,8 +452,26 @@ private:
         return config;
     }
     
-    static ProcessResult compile_program() {
-        std::string cmd = "g++ -std=c++17 -Wall -Wextra -O2 -o test_runner test_main.cpp user.cpp 2>&1";
+    static ProcessResult compile_program(const std::string& config_file_path) {
+        // Read config for compilation settings
+        std::ifstream config_file(config_file_path);
+        json config;
+        config_file >> config;
+        
+        // Get C++ standard from config or use default
+        std::string cpp_standard = "c++17";
+        if (config.contains("cpp_standard")) {
+            cpp_standard = config["cpp_standard"].get<std::string>();
+        }
+        
+        // Get compiler flags from config or use defaults
+        std::string compiler_flags = "-Wall -Wextra -O2";
+        if (config.contains("compiler_flags")) {
+            compiler_flags = config["compiler_flags"].get<std::string>();
+        }
+        
+        std::string cmd = "g++ -std=" + cpp_standard + " " + compiler_flags + " -o test_runner test_main.cpp user.cpp 2>&1";
+        
         return run_command(cmd);
     }
     

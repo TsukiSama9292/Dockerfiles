@@ -173,7 +173,12 @@ static void generate_header(cJSON *cfg) {
     
     // Generate solve function signature
     fprintf(hf, "// User solve function\n");
-    fprintf(hf, "int solve(");
+    
+    // Get function return type from config or use default
+    cJSON *function_type = cJSON_GetObjectItem(cfg, "function_type");
+    const char *return_type = function_type ? cJSON_GetStringValue(function_type) : "int";
+    
+    fprintf(hf, "%s solve(", return_type);
     cJSON *params = cJSON_GetObjectItem(cfg, "solve_params");
     if (cJSON_IsArray(params)) {
         int count = cJSON_GetArraySize(params);
@@ -181,7 +186,12 @@ static void generate_header(cJSON *cfg) {
             if (i > 0) fprintf(hf, ", ");
             cJSON *param = cJSON_GetArrayItem(params, i);
             const char *name = cJSON_GetObjectItem(param, "name")->valuestring;
-            fprintf(hf, "int *%s", name);
+            
+            // Get parameter type from config or use default
+            cJSON *param_type = cJSON_GetObjectItem(param, "type");
+            const char *type = param_type ? cJSON_GetStringValue(param_type) : "int";
+            
+            fprintf(hf, "%s *%s", type, name);
         }
     }
     fprintf(hf, ");\n\n");
@@ -212,14 +222,26 @@ static void generate_test_main(cJSON *cfg) {
             cJSON *param = cJSON_GetArrayItem(params, i);
             const char *name = cJSON_GetObjectItem(param, "name")->valuestring;
             int input_value = cJSON_GetObjectItem(param, "input_value")->valueint;
-            fprintf(mf, "    int %s = %d;\n", name, input_value);
+            
+            // Get parameter type from config or use default
+            cJSON *param_type = cJSON_GetObjectItem(param, "type");
+            const char *type = param_type ? cJSON_GetStringValue(param_type) : "int";
+            
+            fprintf(mf, "    %s %s = %d;\n", type, name, input_value);
             if (i > 0) fprintf(mf, "    printf(\", \");\n");
             fprintf(mf, "    printf(\"%s=%%d\", %s);\n", name, name);
         }
         fprintf(mf, "    printf(\"\\n\");\n\n");
         
-        // Call solve function
-        fprintf(mf, "    int function_result = solve(");
+        // Call solve function with proper return type
+        cJSON *function_type = cJSON_GetObjectItem(cfg, "function_type");
+        const char *return_type = function_type ? cJSON_GetStringValue(function_type) : "int";
+        
+        if (strcmp(return_type, "void") == 0) {
+            fprintf(mf, "    solve(");
+        } else {
+            fprintf(mf, "    %s function_result = solve(", return_type);
+        }
         for (int i = 0; i < param_count; i++) {
             if (i > 0) fprintf(mf, ", ");
             cJSON *param = cJSON_GetArrayItem(params, i);
@@ -245,7 +267,11 @@ static void generate_test_main(cJSON *cfg) {
             const char *name = cJSON_GetObjectItem(param, "name")->valuestring;
             fprintf(mf, "    printf(\"%s:%%d\\n\", %s);\n", name, name);
         }
-        fprintf(mf, "    printf(\"return_value:%%d\\n\", function_result);\n");
+        
+        // Only print return value if function is not void
+        if (strcmp(return_type, "void") != 0) {
+            fprintf(mf, "    printf(\"return_value:%%d\\n\", function_result);\n");
+        }
         fprintf(mf, "    printf(\"RESULT_END\\n\");\n");
     }
     
@@ -277,10 +303,19 @@ int main(int argc, char **argv) {
     generate_header(cfg);
     generate_test_main(cfg);
     
+    // Get C standard from config or use default
+    const cJSON* c_standard = cJSON_GetObjectItem(cfg, "c_standard");
+    const char* std_flag = c_standard ? cJSON_GetStringValue(c_standard) : "c99";
+    
+    // Get compiler flags from config or use defaults
+    const cJSON* compiler_flags = cJSON_GetObjectItem(cfg, "compiler_flags");
+    const char* extra_flags = compiler_flags ? cJSON_GetStringValue(compiler_flags) : "-Wall -Wextra";
+    
     // Compile everything with stderr capture
     char compile_cmd[512];
     snprintf(compile_cmd, sizeof(compile_cmd), 
-             "gcc -Wall -Wextra -std=c99 -include stdio.h -o test_runner test_main.c user.c 2>&1");
+             "gcc %s -std=%s -include stdio.h -o test_runner test_main.c user.c 2>&1",
+             extra_flags, std_flag);
     
     FILE *compile_output = popen(compile_cmd, "r");
     if (!compile_output) {

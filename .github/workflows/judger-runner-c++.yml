@@ -1,4 +1,4 @@
-name: judger-runner gcc
+name: judger-runner c
 
 on:
   schedule:
@@ -22,12 +22,14 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: Build GCC Images
+    - name: Build C++ Images
       run: |
-        docker build --pull --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=14-bookworm -t tsukisama9292/judger-runner:gcc-14 .
-        docker build --pull --no-cache -f judger-runner/gcc/Dockerfile --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:gcc-15 .
-
+        docker build --pull --no-cache --build-arg GCC_TAG=15-bookworm -t tsukisama9292/judger-runner:c_plus_plus .
+    
+    - name: CI Test
+      run: |
+        docker run --rm tsukisama9292/judger-runner:c_plus_plus make test-ci
+    
     - name: Push the Docker image to Docker Hub
       run: |
-        docker push tsukisama9292/judger-runner:gcc-14
-        docker push tsukisama9292/judger-runner:gcc-15
+        docker push tsukisama9292/judger-runner:c_plus_plus

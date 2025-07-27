@@ -3,4 +3,4 @@ result.json
 solve.h
 test_main.c
 test_runner
-*.json
+result_*.json
