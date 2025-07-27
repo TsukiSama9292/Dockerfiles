@@ -1,4 +1,4 @@
-name: judger-runner c
+name: judger-runner c++
 
 on:
   schedule:
