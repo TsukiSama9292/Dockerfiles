@@ -75,6 +75,6 @@ USER kasm-user
 
 RUN mkdir -p /home/kasm-user/Desktop
 
-RUN curl -LsSf https://astral.sh/uv/0.6.17/install.sh | sh
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/home/kasm-user/.local/bin:$PATH"
 RUN sudo rm -rf /var/lib/apt/lists/*
