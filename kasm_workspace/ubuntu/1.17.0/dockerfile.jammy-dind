@@ -38,9 +38,14 @@ RUN sudo apt update && sudo apt-get install -f -y
 RUN rm -rf dbeaver-ce_latest_amd64.deb
 
 # 安裝 docker-compose
-RUN sudo curl -L -o docker-compose-linux-x86_64 https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64
-RUN sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
-RUN sudo chmod +x /usr/local/bin/docker-compose
+RUN mkdir -p /usr/lib/docker/cli-plugins \
+    && curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 \
+        -o /usr/lib/docker/cli-plugins/docker-compose \
+    && chmod +x /usr/lib/docker/cli-plugins/docker-compose
+
+# RUN sudo curl -L -o docker-compose-linux-x86_64 https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64
+# RUN sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+# RUN sudo chmod +x /usr/local/bin/docker-compose
 
 # 安裝 Discord
 RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb \
