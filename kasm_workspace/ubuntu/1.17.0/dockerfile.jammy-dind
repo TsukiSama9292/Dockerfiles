@@ -4,7 +4,8 @@ ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
-RUN sudo apt-get update && sudo apt-get upgrade -y
+RUN sudo apt-get update && \
+    sudo apt-get upgrade **-o Dpkg::Options::="--force-confold" -y**
 
 RUN sudo apt install -y \
     gnome-keyring \
