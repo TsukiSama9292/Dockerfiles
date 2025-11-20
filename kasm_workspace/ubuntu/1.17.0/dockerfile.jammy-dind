@@ -14,10 +14,9 @@ RUN sudo apt install -y \
     nmap \
     traceroute \
     tcptraceroute
-    
 
 # 安裝 NVM 和 Node.js
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 RUN echo "source \$HOME/.nvm/nvm.sh" >> ~/.bashrc
 
 # 目前 LTS 為 22
@@ -52,23 +51,8 @@ RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord
 # 建立工作目錄
 RUN mkdir /home/kasm-user/workspace
 
-# 下載並安裝 Postman
-RUN wget https://dl.pstmn.io/download/latest/linux64 -O postman-linux-x64.tar.gz \
-    && sudo tar -xvzf postman-linux-x64.tar.gz -C /opt \
-    && rm postman-linux-x64.tar.gz
-
 # 切換到 root 用戶
 USER root
-
-# 建立 Postman 桌面連結
-RUN echo '[Desktop Entry]' >> /usr/share/applications/postman.desktop && \
-    echo 'Name=Postman' >> /usr/share/applications/postman.desktop && \
-    echo 'Exec=/opt/Postman/Postman' >> /usr/share/applications/postman.desktop && \
-    echo 'Icon=/opt/Postman/app/icons/icon_128x128.png' >> /usr/share/applications/postman.desktop && \
-    echo 'Type=Application' >> /usr/share/applications/postman.desktop && \
-    echo 'Categories=Development;' >> /usr/share/applications/postman.desktop
-# 授權 Postman 桌面連結
-RUN chmod +x /usr/share/applications/postman.desktop
 
 # 切換回非 root 用戶
 USER kasm-user
