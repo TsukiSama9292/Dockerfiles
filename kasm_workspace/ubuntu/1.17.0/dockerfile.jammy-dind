@@ -1,69 +1,78 @@
 FROM kasmweb/ubuntu-jammy-dind:1.17.0-rolling-daily
 
 USER kasm-user
-RUN mkdir /home/kasm-user/workspace
-RUN mkdir -p /home/kasm-user/Desktop
+RUN mkdir -p /home/kasm-user/workspace /home/kasm-user/Desktop
 
 ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
 
+# 安裝基本工具
 RUN sudo apt-get update && \
-    sudo DEBIAN_FRONTEND=noninteractive apt install code && \
-    sudo apt-get upgrade -y
-
-RUN sudo apt install -y \
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y code && \
+    sudo apt-get upgrade -y && \
+    sudo apt install -y \
     gnome-keyring \
     htop \
     tree \
     p7zip-full \
     nmap \
     traceroute \
-    tcptraceroute
+    tcptraceroute \
+    curl \
+    git \
+    ca-certificates \
+    wget \
+    sudo \
+    unzip \
+    && sudo rm -rf /var/lib/apt/lists/*
 
-# 設定系統範圍 NVM 目錄
+# -------------------
+# 安裝 nvm + Node.js 系統範圍
+# -------------------
+
 ENV NVM_DIR=/usr/local/nvm
-RUN sudo mkdir -p $NVM_DIR && sudo chown 1000:1000 $NVM_DIR  # 假設普通用戶 UID=1000
+RUN sudo mkdir -p $NVM_DIR
 
-# 系統範圍安裝 nvm
-RUN sudo env NVM_DIR="/usr/local/nvm" INSTALLER_NO_MODIFY_PATH=1 bash -c \
-"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
+# 安裝 nvm 到系統目錄
+RUN sudo env NVM_DIR="$NVM_DIR" INSTALLER_NO_MODIFY_PATH=1 bash -c \
+    "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
 
-# 安裝 Node.js LTS (22)
-RUN sudo env NVM_DIR="/usr/local/nvm" bash -c "\
-[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && \
-nvm install 22 && nvm alias default 22"
+# 安裝 Node.js LTS (22) 並設為預設
+RUN sudo env NVM_DIR="$NVM_DIR" bash -c "\
+    [ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\" && \
+    nvm install 22 && nvm alias default 22"
 
-# 將 nvm 載入加入所有使用者 shell
+# 將 nvm 自動載入加入所有使用者 shell
 RUN sudo tee -a /etc/profile >/dev/null <<'EOF'
 export NVM_DIR=/usr/local/nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 EOF
 
+# Docker build 過程中直接使用 Node.js
+ENV PATH=/usr/local/nvm/versions/node/v22.21.1/bin:$PATH
 
-# 安裝工具資料庫管理工具
-RUN wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
-RUN sudo dpkg -i dbeaver-ce_latest_amd64.deb
-RUN sudo apt update && sudo apt-get install -f -y
-RUN rm -rf dbeaver-ce_latest_amd64.deb
+# -------------------
+# 安裝其他工具
+# -------------------
 
-# 安裝 docker-compose
-RUN sudo mkdir -p /usr/lib/docker/cli-plugins \
-    && sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 \
-        -o /usr/lib/docker/cli-plugins/docker-compose \
-    && sudo chmod +x /usr/lib/docker/cli-plugins/docker-compose
+# DBeaver
+RUN wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb && \
+    sudo dpkg -i dbeaver-ce_latest_amd64.deb || true && \
+    sudo apt-get install -f -y && \
+    rm -f dbeaver-ce_latest_amd64.deb
 
-# RUN sudo curl -L -o docker-compose-linux-x86_64 https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64
-# RUN sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
-# RUN sudo chmod +x /usr/local/bin/docker-compose
+# docker-compose
+RUN sudo mkdir -p /usr/lib/docker/cli-plugins && \
+    sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 \
+    -o /usr/lib/docker/cli-plugins/docker-compose && \
+    sudo chmod +x /usr/lib/docker/cli-plugins/docker-compose
 
-# 安裝 Discord
-RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb \
-    && sudo dpkg -i discord.deb \
-    && sudo apt-get install -f -y \
-    && rm discord.deb
+# Discord
+RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord.deb && \
+    sudo dpkg -i discord.deb || true && \
+    sudo apt-get install -f -y && \
+    rm -f discord.deb
 
-# 安裝 uv 到系統
+# uv 到系統
 RUN curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/usr/local/bin" INSTALLER_NO_MODIFY_PATH=1 sh
-
-RUN sudo rm -rf /var/lib/apt/lists/*
