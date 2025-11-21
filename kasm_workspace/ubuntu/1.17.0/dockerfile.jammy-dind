@@ -89,9 +89,9 @@ RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord
 RUN curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/usr/local/bin" INSTALLER_NO_MODIFY_PATH=1 sh
 
 # 嘗試解決 Docker overlayfs 重疊問題
-RUN sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
+RUN sudo sh -c 'cat > /etc/docker/daemon.json <<EOF
 {
   "storage-driver": "fuse-overlayfs",
   "experimental": true
 }
-EOF
+EOF'
