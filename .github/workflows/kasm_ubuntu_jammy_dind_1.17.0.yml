@@ -1,9 +1,13 @@
 name: Kasm Ubuntu Jammy dind 1.17.0
 
 on:
-  schedule:
-    - cron: '0 16 * * *'
+  push:
+    branches: [main]
+    paths:
+      - "kasm_workspace/ubuntu/1.17.0/dockerfile.jammy-dind"
   workflow_dispatch:
+  # schedule:
+  #   - cron: '0 16 * * *'
 
 jobs:
   build:
