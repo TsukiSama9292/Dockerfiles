@@ -2,11 +2,11 @@ FROM kasmweb/ubuntu-jammy-dind:1.17.0-rolling-daily
 
 ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
-    TZ=Etc/UTC \
     SKIP_CLEAN=true
 
 RUN sudo apt-get update && \
-    sudo apt-get upgrade -o Dpkg::Options::="--force-confold" -y
+    sudo DEBIAN_FRONTEND=noninteractive apt install code && \
+    sudo apt-get upgrade -y
 
 RUN sudo apt install -y \
     gnome-keyring \
