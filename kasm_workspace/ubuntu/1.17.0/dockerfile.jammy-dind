@@ -52,6 +52,17 @@ EOF
 # Docker build 過程中直接使用 Node.js
 ENV PATH=/usr/local/nvm/versions/node/v22.21.1/bin:$PATH
 
+# nvm 在 login shell 會自動載入
+RUN sudo tee /etc/profile.d/nvm.sh >/dev/null <<'EOF'
+export NVM_DIR=/usr/local/nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+EOF
+
+# nvm 在 互動 shell 也會自動載入
+RUN sudo tee -a /etc/bash.bashrc >/dev/null <<'EOF'
+[ -s "/etc/profile.d/nvm.sh" ] && \. "/etc/profile.d/nvm.sh"
+EOF
+
 # -------------------
 # 安裝其他工具
 # -------------------
