@@ -26,16 +26,16 @@ ENV NVM_DIR=/usr/local/nvm
 RUN sudo mkdir -p $NVM_DIR && sudo chown 1000:1000 $NVM_DIR  # 假設普通用戶 UID=1000
 
 # 系統範圍安裝 nvm
-sudo env NVM_DIR="/usr/local/nvm" INSTALLER_NO_MODIFY_PATH=1 bash -c \
+RUN sudo env NVM_DIR="/usr/local/nvm" INSTALLER_NO_MODIFY_PATH=1 bash -c \
 "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
 
 # 安裝 Node.js LTS (22)
-sudo env NVM_DIR="/usr/local/nvm" bash -c "\
+RUN sudo env NVM_DIR="/usr/local/nvm" bash -c "\
 [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && \
 nvm install 22 && nvm alias default 22"
 
 # 將 nvm 載入加入所有使用者 shell
-sudo tee -a /etc/profile >/dev/null <<'EOF'
+RUN sudo tee -a /etc/profile >/dev/null <<'EOF'
 export NVM_DIR=/usr/local/nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 EOF
