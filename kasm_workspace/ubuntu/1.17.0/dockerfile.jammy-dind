@@ -1,5 +1,9 @@
 FROM kasmweb/ubuntu-jammy-dind:1.17.0-rolling-daily
 
+USER kasm-user
+RUN mkdir /home/kasm-user/workspace
+RUN mkdir -p /home/kasm-user/Desktop
+
 ENV DEBUG=false \
     DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true
@@ -29,7 +33,7 @@ RUN export NVM_DIR="$HOME/.nvm" && \
     nvm alias default 22
 
 # 設定環境變數以便 Node.js 和 npm 可用
-ENV NVM_DIR=/home/kasm_user/.nvm
+ENV NVM_DIR="$HOME/.nvm"
 ENV NODE_VERSION=default
 ENV PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
@@ -54,17 +58,6 @@ RUN wget "https://discord.com/api/download?platform=linux&format=deb" -O discord
     && sudo dpkg -i discord.deb \
     && sudo apt-get install -f -y \
     && rm discord.deb
-
-# 建立工作目錄
-RUN mkdir /home/kasm-user/workspace
-
-# 切換到 root 用戶
-USER root
-
-# 切換回非 root 用戶
-USER kasm-user
-
-RUN mkdir -p /home/kasm-user/Desktop
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/home/kasm-user/.local/bin:$PATH"
