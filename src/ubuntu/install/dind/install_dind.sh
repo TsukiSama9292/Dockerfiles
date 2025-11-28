@@ -61,3 +61,7 @@ if [ -z ${SKIP_CLEAN+x} ]; then
         /var/tmp/* \
         /tmp/*
 fi
+
+# Fix Docker overlayfs
+echo '{"storage-driver":"fuse-overlayfs","experimental":true}' \
+    | tee /etc/docker/daemon.json > /dev/null
