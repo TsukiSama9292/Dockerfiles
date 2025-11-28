@@ -38,6 +38,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/chromium/install_chromium.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
                   /ubuntu/install/only_office/install_only_office.sh \
+                  /ubuntu/install/nextcloud/install_nextcloud.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
