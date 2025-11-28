@@ -34,7 +34,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/dbeaver/install_dbeaver.sh \
                   /ubuntu/install/discord/install_discord.sh \
                   /ubuntu/install/uv/install_uv.sh \
-                  /ubuntu/install/nmv/install_nvm.sh \
+                  /ubuntu/install/nvm/install_nvm.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
