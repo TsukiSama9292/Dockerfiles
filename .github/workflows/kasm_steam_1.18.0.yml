@@ -1,6 +1,10 @@
 name: steam 1.18.0
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "kasm_workspace/steam/dockerfile"
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
