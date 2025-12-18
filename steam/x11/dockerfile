@@ -1,0 +1,22 @@
+FROM ubuntu:noble
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN dpkg --add-architecture i386 && \
+    apt update && \
+    apt install -y \
+        sudo wget \
+        locales \
+        dbus dbus-x11 \
+        at-spi2-core \
+        x11-utils \
+        mesa-utils \
+        steam-installer && \
+    locale-gen zh_TW.UTF-8 && \
+    update-locale LANG=zh_TW.UTF-8 && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m user && echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER user
+WORKDIR /home/user
